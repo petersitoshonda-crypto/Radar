@@ -3,509 +3,898 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Radar de Madurez Digital — Apex Q1 2026</title>
+<title>Apex — Dashboard Q1 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0b0c10;
-    --surface: #13151c;
-    --surface2: #1a1d28;
-    --border: #252836;
-    --accent: #f0a500;
-    --accent2: #e05c2a;
-    --text: #e8eaf0;
-    --text-muted: #6b7080;
-    --ventas: #3b82f6;
-    --repuestos: #f97316;
-    --taller: #22c55e;
-    --global: #a78bfa;
-  }
+:root {
+  --bg:         #0b0c10;
+  --surface:    #13151c;
+  --surface2:   #1a1d28;
+  --border:     #252836;
+  --accent:     #f0a500;
+  --accent2:    #e05c2a;
+  --text:       #e8eaf0;
+  --muted:      #6b7080;
+  --ventas:     #3b82f6;
+  --repuestos:  #f97316;
+  --taller:     #22c55e;
+  --transversal:#a78bfa;
+  --global:     #a78bfa;
+}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-  }
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.6;
+}
 
-  .wrapper {
-    position: relative;
-    z-index: 1;
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 32px 24px 48px;
-  }
+.wrapper {
+  position: relative; z-index: 1;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 28px 24px 56px;
+}
 
-  header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 36px;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
+/* ── TOP NAV ─────────────────────────────────────────── */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
 
-  .eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
+.brand {
+  display: flex; align-items: center; gap: 12px;
+}
+.brand-mark {
+  width: 36px; height: 36px;
+  background: var(--accent);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; font-weight: 500;
+  color: #0b0c10;
+  letter-spacing: -0.02em;
+}
+.brand-text {
+  font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+}
+.brand-text span {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 1px;
+}
 
-  h1 { font-size: 26px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
-  h1 span { color: var(--accent); }
+.page-tabs {
+  display: flex; gap: 2px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px;
+}
 
-  .badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.page-tab {
+  padding: 9px 20px;
+  border-radius: 4px; border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.page-tab:hover { color: var(--text); }
+.page-tab.active {
+  background: rgba(240,165,0,0.12);
+  color: var(--accent);
+  border-color: rgba(240,165,0,0.25);
+}
 
-  .badge {
-    display: inline-block;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 3px 10px;
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-  }
-  .badge.demo { border-color: var(--accent2); color: var(--accent2); }
+/* ── PAGE SECTIONS ───────────────────────────────────── */
+.page { display: none; }
+.page.active { display: block; }
 
-  .selector-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+/* ── SHARED HEADER ROW ───────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap; gap: 12px;
+}
+.section-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.2em;
+  color: var(--accent); text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.section-title {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+}
+.selector-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.selector-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em;
+  color: var(--muted); text-transform: uppercase;
+}
+select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 600;
+  padding: 9px 36px 9px 14px;
+  border-radius: 4px; cursor: pointer;
+  outline: none; appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7080' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  min-width: 180px; transition: border-color 0.2s;
+}
+select:hover, select:focus { border-color: var(--accent); }
 
-  .selector-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--text-muted);
-    text-transform: uppercase;
-  }
+/* ── RADAR AREA TABS ─────────────────────────────────── */
+.area-tabs {
+  display: flex; gap: 2px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px;
+}
+.tab {
+  flex: 1; padding: 10px 12px;
+  border-radius: 4px; border: 1px solid transparent;
+  background: transparent; color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+  letter-spacing: 0.02em; text-align: center;
+}
+.tab:hover { color: var(--text); }
+.tab.active[data-area="Global"]    { background: rgba(167,139,250,.15); color: var(--global);     border-color: rgba(167,139,250,.3); }
+.tab.active[data-area="Ventas"]    { background: rgba(59,130,246,.15);  color: var(--ventas);     border-color: rgba(59,130,246,.3); }
+.tab.active[data-area="Repuestos"] { background: rgba(249,115,22,.15);  color: var(--repuestos);  border-color: rgba(249,115,22,.3); }
+.tab.active[data-area="Taller"]    { background: rgba(34,197,94,.15);   color: var(--taller);     border-color: rgba(34,197,94,.3); }
 
-  select {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 10px 36px 10px 14px;
-    border-radius: 4px;
-    cursor: pointer;
-    outline: none;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7080' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    min-width: 180px;
-    transition: border-color 0.2s;
-  }
-  select:hover, select:focus { border-color: var(--accent); }
+/* ── MAIN GRID ───────────────────────────────────────── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 20px; align-items: start;
+}
 
-  /* Tabs */
-  .tabs {
-    display: flex;
-    gap: 2px;
-    margin-bottom: 28px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px;
-  }
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 28px;
+  position: relative; overflow: hidden;
+}
+.chart-card::before {
+  content: '';
+  position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(240,165,0,.04) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-  .tab {
-    flex: 1;
-    padding: 10px 14px;
-    border-radius: 4px;
-    border: 1px solid transparent;
-    background: transparent;
-    color: var(--text-muted);
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.02em;
-  }
-  .tab:hover { color: var(--text); }
-  .tab.active[data-area="Global"]    { background: rgba(167,139,250,0.15); color: var(--global);    border-color: rgba(167,139,250,0.3); }
-  .tab.active[data-area="Ventas"]    { background: rgba(59,130,246,0.15);  color: var(--ventas);    border-color: rgba(59,130,246,0.3); }
-  .tab.active[data-area="Repuestos"] { background: rgba(249,115,22,0.15);  color: var(--repuestos); border-color: rgba(249,115,22,0.3); }
-  .tab.active[data-area="Taller"]    { background: rgba(34,197,94,0.15);   color: var(--taller);    border-color: rgba(34,197,94,0.3); }
+.chart-title-row {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 20px;
+}
+.chart-title-text {
+  font-size: 12px; font-weight: 600;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.area-indicator {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; padding: 3px 10px;
+  border-radius: 2px; font-weight: 500; letter-spacing: 0.05em;
+}
+.area-indicator.Global    { background: rgba(167,139,250,.15); color: var(--global); }
+.area-indicator.Ventas    { background: rgba(59,130,246,.15);  color: var(--ventas); }
+.area-indicator.Repuestos { background: rgba(249,115,22,.15);  color: var(--repuestos); }
+.area-indicator.Taller    { background: rgba(34,197,94,.15);   color: var(--taller); }
 
-  /* Layout */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 240px;
-    gap: 20px;
-    align-items: start;
-  }
+.chart-container { position: relative; height: 380px; }
 
-  .chart-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-  }
-  .chart-card::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 200px; height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(240,165,0,0.04) 0%, transparent 70%);
-    pointer-events: none;
-  }
+.legend {
+  display: flex; gap: 16px; margin-top: 16px;
+  justify-content: center; flex-wrap: wrap;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+.legend-swatch { width: 24px; height: 2.5px; border-radius: 2px; }
+.legend-swatch.dashed {
+  background: repeating-linear-gradient(90deg,
+    rgba(255,255,255,.3) 0, rgba(255,255,255,.3) 4px,
+    transparent 4px, transparent 8px);
+}
 
-  .chart-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  .chart-title-text {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
+/* ── SCORES PANEL ────────────────────────────────────── */
+.scores-panel { display: flex; flex-direction: column; gap: 10px; }
 
-  .area-indicator {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 2px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-  }
-  .area-indicator.Global    { background: rgba(167,139,250,0.15); color: var(--global); }
-  .area-indicator.Ventas    { background: rgba(59,130,246,0.15);  color: var(--ventas); }
-  .area-indicator.Repuestos { background: rgba(249,115,22,0.15);  color: var(--repuestos); }
-  .area-indicator.Taller    { background: rgba(34,197,94,0.15);   color: var(--taller); }
+.score-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px 14px;
+  transition: border-color 0.2s;
+}
+.score-card:hover { border-color: rgba(240,165,0,.25); }
 
-  .chart-container { position: relative; height: 380px; }
+.score-dim {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+.score-row {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-top: 6px;
+}
+.score-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+.score-value { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; }
 
-  .legend {
-    display: flex;
-    gap: 16px;
-    margin-top: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 11px;
-    color: var(--text-muted);
-    font-family: 'DM Mono', monospace;
-  }
-  .legend-swatch {
-    width: 24px; height: 2.5px;
-    border-radius: 2px;
-  }
-  .legend-swatch.dashed {
-    background: repeating-linear-gradient(90deg,
-      rgba(255,255,255,0.3) 0, rgba(255,255,255,0.3) 4px,
-      transparent 4px, transparent 8px);
-  }
+.score-bar-track {
+  position: relative; height: 3px;
+  background: rgba(255,255,255,.07);
+  border-radius: 2px; margin-top: 8px; overflow: visible;
+}
+.score-bar-fill-single {
+  height: 100%; border-radius: 2px; transition: width 0.4s ease;
+}
+.score-bar-avg {
+  position: absolute; top: -3px;
+  width: 1px; height: 9px;
+  background: rgba(255,255,255,.4);
+  border-radius: 1px;
+}
 
-  /* Scores panel */
-  .scores-panel { display: flex; flex-direction: column; gap: 10px; }
+.area-bars { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+.area-bar-row { display: flex; align-items: center; gap: 6px; }
+.area-bar-label { font-family: 'DM Mono', monospace; font-size: 9px; width: 22px; flex-shrink: 0; }
+.area-bar-track {
+  flex: 1; height: 3px;
+  background: rgba(255,255,255,.07); border-radius: 2px; overflow: hidden;
+}
+.area-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+.area-bar-val { font-family: 'DM Mono', monospace; font-size: 10px; width: 14px; text-align: right; }
 
-  .score-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px 14px;
-    transition: border-color 0.2s;
-  }
-  .score-card:hover { border-color: rgba(240,165,0,0.25); }
+.diff-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; padding: 2px 6px;
+  border-radius: 2px; letter-spacing: 0.05em; font-weight: 500;
+}
+.diff-badge.pos { background: rgba(34,197,94,.15); color: var(--taller); }
+.diff-badge.neg { background: rgba(239,68,68,.15);  color: #ef4444; }
+.diff-badge.neu { background: rgba(255,255,255,.06); color: var(--muted); }
 
-  .score-dim {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
+/* ── SUMMARY BAR ─────────────────────────────────────── */
+.summary-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px 24px;
+  display: grid; gap: 0; margin-top: 20px;
+  position: relative; overflow: hidden;
+}
+.summary-bar::before {
+  content: '';
+  position: absolute; bottom: -20px; right: -20px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(240,165,0,.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.summary-bar.cols-4 { grid-template-columns: repeat(4,1fr); }
+.summary-bar.cols-3 { grid-template-columns: repeat(3,1fr); }
 
-  /* Global mode: mini area bars */
-  .area-bars { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
-  .area-bar-row { display: flex; align-items: center; gap: 6px; }
-  .area-bar-label { font-family: 'DM Mono', monospace; font-size: 9px; width: 22px; flex-shrink: 0; }
-  .area-bar-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
-  .area-bar-fill  { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
-  .area-bar-val   { font-family: 'DM Mono', monospace; font-size: 10px; width: 14px; text-align: right; flex-shrink: 0; }
+.summary-item {
+  padding: 4px 16px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.summary-item:last-child { border-right: none; }
 
-  /* Single-area mode */
-  .score-row { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; }
-  .score-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); }
-  .score-value { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
-  .score-bar-track {
-    height: 3px; background: var(--border); border-radius: 2px;
-    margin-top: 6px; position: relative;
-  }
-  .score-bar-fill-single { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
-  .score-bar-avg {
-    position: absolute; top: -3px; width: 2px; height: 9px;
-    background: rgba(255,255,255,0.25); border-radius: 1px;
-    transform: translateX(-50%); transition: left 0.5s ease;
-  }
+.summary-num {
+  font-size: 26px; font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1;
+}
+.summary-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin-top: 4px;
+}
+.clr-global    { color: var(--global); }
+.clr-ventas    { color: var(--ventas); }
+.clr-repuestos { color: var(--repuestos); }
+.clr-taller    { color: var(--taller); }
 
-  .diff-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px; padding: 1px 5px; border-radius: 2px; font-weight: 500;
-  }
-  .diff-pos  { background: rgba(34,197,94,0.15);  color: #22c55e; }
-  .diff-neg  { background: rgba(239,68,68,0.15);  color: #ef4444; }
-  .diff-zero { background: var(--border); color: var(--text-muted); }
+/* ── BUBBLE CHART (PORTAFOLIO) ───────────────────────── */
+.bubble-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 20px; align-items: start;
+}
 
-  /* Summary bar */
-  .summary-bar {
-    margin-top: 20px;
-    display: grid;
-    gap: 1px;
-    background: var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .summary-bar.cols-3 { grid-template-columns: repeat(3,1fr); }
-  .summary-bar.cols-4 { grid-template-columns: repeat(4,1fr); }
+.bubble-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 28px;
+  position: relative; overflow: hidden;
+}
+.bubble-card::before {
+  content: '';
+  position: absolute; top: -80px; left: -80px;
+  width: 260px; height: 260px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(240,165,0,.03) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-  .summary-item { background: var(--surface); padding: 14px 12px; text-align: center; }
+.bubble-container { position: relative; height: 400px; }
 
-  .summary-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 20px; font-weight: 500;
-    color: var(--accent); line-height: 1; margin-bottom: 4px;
-  }
-  .summary-lbl {
-    font-size: 9px; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .clr-global    { color: var(--global) !important; }
-  .clr-ventas    { color: var(--ventas) !important; }
-  .clr-repuestos { color: var(--repuestos) !important; }
-  .clr-taller    { color: var(--taller) !important; }
-  .clr-better    { color: #22c55e !important; }
-  .clr-worse     { color: #ef4444 !important; }
-  .clr-neutral   { color: var(--text-muted) !important; }
+/* Quadrant labels overlay */
+.quadrant-labels {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  /* offsets match chart padding */
+}
+.q-label {
+  position: absolute;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  opacity: 0.35;
+  padding: 5px 8px;
+  border-radius: 3px;
+}
 
-  @media (max-width: 700px) {
-    .main-grid { grid-template-columns: 1fr; }
-    .scores-panel { display: grid; grid-template-columns: repeat(2,1fr); }
-    .summary-bar.cols-4 { grid-template-columns: repeat(2,1fr); }
-  }
+/* ── PROJECT LIST PANEL ──────────────────────────────── */
+.project-panel { display: flex; flex-direction: column; gap: 10px; }
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px;
+  cursor: pointer; transition: all 0.2s;
+  position: relative; overflow: hidden;
+}
+.project-card:hover { border-color: rgba(240,165,0,.3); transform: translateX(2px); }
+.project-card.highlighted { border-color: rgba(240,165,0,.5); }
+
+.project-area-bar {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; border-radius: 6px 0 0 6px;
+}
+
+.project-name {
+  font-size: 12px; font-weight: 700;
+  line-height: 1.3; padding-left: 8px;
+  margin-bottom: 8px;
+}
+.project-meta {
+  display: flex; gap: 6px; flex-wrap: wrap; padding-left: 8px;
+}
+.project-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; padding: 2px 6px;
+  border-radius: 2px; letter-spacing: 0.05em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.project-tag.rice {
+  color: var(--accent);
+  border-color: rgba(240,165,0,.3);
+  background: rgba(240,165,0,.08);
+}
+.project-tag.quadrant-qw  { color: #22c55e; border-color: rgba(34,197,94,.3);   background: rgba(34,197,94,.08); }
+.project-tag.quadrant-bet { color: #3b82f6; border-color: rgba(59,130,246,.3);  background: rgba(59,130,246,.08); }
+.project-tag.quadrant-fil { color: #f0a500; border-color: rgba(240,165,0,.3);   background: rgba(240,165,0,.08); }
+.project-tag.quadrant-avo { color: #ef4444; border-color: rgba(239,68,68,.3);   background: rgba(239,68,68,.08); }
+
+.project-rice-row {
+  margin-top: 10px; padding-left: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.rice-bar-track {
+  flex: 1; height: 3px;
+  background: rgba(255,255,255,.07); border-radius: 2px; overflow: hidden;
+}
+.rice-bar-fill { height: 100%; border-radius: 2px; }
+
+/* Quadrant legend */
+.quadrant-legend {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px;
+  margin-top: 10px;
+}
+.q-legend-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 10px;
+}
+.q-legend-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-bottom: 8px;
+}
+.q-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 3px;
+}
+.q-legend-text { font-size: 11px; line-height: 1.4; }
+.q-legend-sub  { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); margin-top: 1px; }
+
+/* Area legend for bubble */
+.area-legend {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; margin-top: 10px;
+}
+.area-legend-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 7px;
+}
+.area-legend-row:last-child { margin-bottom: 0; }
+.area-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.area-legend-label { font-size: 12px; font-weight: 600; }
+.area-legend-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted); margin-left: auto;
+}
+
+/* Warning banner */
+.data-warning {
+  background: rgba(240,165,0,.06);
+  border: 1px solid rgba(240,165,0,.2);
+  border-radius: 6px; padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: rgba(240,165,0,.8);
+  letter-spacing: 0.05em;
+}
+.warning-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; } 50% { opacity: .3; }
+}
+
+/* ── BOTTOM SUMMARY ──────────────────────────────────── */
+.bubble-summary {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 12px; margin-top: 20px;
+}
+.bsum-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  text-align: center;
+}
+.bsum-num {
+  font-size: 24px; font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1;
+}
+.bsum-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin-top: 5px;
+}
+
+/* ── MISSING FIELDS BANNER ───────────────────────────── */
+.missing-banner {
+  background: rgba(239,68,68,.06);
+  border: 1px solid rgba(239,68,68,.2);
+  border-radius: 6px; padding: 10px 14px;
+  margin-top: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; line-height: 1.6;
+  color: rgba(239,68,68,.8);
+}
+.missing-title {
+  font-weight: 500; margin-bottom: 4px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
 </style>
 </head>
 <body>
 <div class="wrapper">
 
-  <header>
-    <div class="header-left">
-      <p class="eyebrow">Apex — Sistema de Transformación Digital</p>
-      <h1>Radar de <span>Madurez</span></h1>
-      <div class="badges">
-        <span class="badge">Q1 2026</span>
-        <span class="badge demo">● Datos de ejemplo</span>
+  <!-- ── TOP NAV ─────────────────────────────────────── -->
+  <nav class="top-nav">
+    <div class="brand">
+      <div class="brand-mark">Ax</div>
+      <div class="brand-text">
+        Apex
+        <span>Q1 2026 · 8 Comerciales</span>
       </div>
     </div>
-    <div class="selector-wrap">
-      <span class="selector-label">Comercial</span>
-      <select id="comercialSelect">
-        <option value="Fahonda">Fahonda</option>
-        <option value="ESSA">ESSA</option>
-        <option value="HipertiendaSV">HipertiendaSV</option>
-        <option value="Suzuki">Suzuki</option>
-        <option value="Cadisa">Cadisa</option>
-        <option value="Moto Premium">Moto Premium</option>
-        <option value="Hipertienda">Hipertienda</option>
-        <option value="Indy Motos">Indy Motos</option>
-      </select>
+    <div class="page-tabs">
+      <button class="page-tab active" onclick="showPage('radar')">🎯 Radar de Madurez</button>
+      <button class="page-tab" onclick="showPage('portafolio')">📊 Portafolio</button>
     </div>
-  </header>
+  </nav>
 
-  <div class="tabs">
-    <button class="tab active" data-area="Global"    onclick="setArea('Global')">🌐 Global</button>
-    <button class="tab"        data-area="Ventas"    onclick="setArea('Ventas')">📊 Ventas</button>
-    <button class="tab"        data-area="Repuestos" onclick="setArea('Repuestos')">📦 Repuestos</button>
-    <button class="tab"        data-area="Taller"    onclick="setArea('Taller')">🔧 Taller</button>
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- PAGE: RADAR                                        -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div id="page-radar" class="page active">
+
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Assessment Madurez Digital</div>
+        <div class="section-title">Radar por Comercial</div>
+      </div>
+      <div class="selector-wrap">
+        <div class="selector-label">Comercial</div>
+        <select id="comercialSelect">
+          <option>Fahonda</option>
+          <option>Suzuki</option>
+          <option>Cadisa</option>
+          <option>Moto Premium</option>
+          <option>Indy Motos</option>
+          <option>ESSA</option>
+          <option>Hipertienda</option>
+          <option>HipertiendaSV</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="area-tabs">
+      <button class="tab active" data-area="Global"    onclick="setArea('Global')">🌐 Global</button>
+      <button class="tab"        data-area="Ventas"    onclick="setArea('Ventas')">📊 Ventas</button>
+      <button class="tab"        data-area="Repuestos" onclick="setArea('Repuestos')">📦 Repuestos</button>
+      <button class="tab"        data-area="Taller"    onclick="setArea('Taller')">🔧 Taller</button>
+    </div>
+
+    <div class="main-grid">
+      <div class="chart-card">
+        <div class="chart-title-row">
+          <div class="chart-title-text" id="chartTitleText">Perfil global — 3 áreas × 6 dimensiones</div>
+          <div class="area-indicator Global" id="areaIndicator">Global</div>
+        </div>
+        <div class="chart-container">
+          <canvas id="radarChart"></canvas>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="scores-panel" id="scoresPanel"></div>
+    </div>
+
+    <div class="summary-bar cols-4" id="summaryBar"></div>
   </div>
 
-  <div class="main-grid">
-    <div class="chart-card">
-      <div class="chart-title">
-        <span class="chart-title-text" id="chartTitleText">Perfil global — 3 áreas × 6 dimensiones</span>
-        <span class="area-indicator Global" id="areaIndicator">Global</span>
+  <!-- ══════════════════════════════════════════════════ -->
+  <!-- PAGE: PORTAFOLIO                                   -->
+  <!-- ══════════════════════════════════════════════════ -->
+  <div id="page-portafolio" class="page">
+
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Priorización RICE · Impact vs Esfuerzo</div>
+        <div class="section-title">Portafolio de Proyectos</div>
       </div>
-      <div class="chart-container">
-        <canvas id="radarChart"></canvas>
-      </div>
-      <div class="legend" id="legend"></div>
     </div>
 
-    <div class="scores-panel" id="scoresPanel"></div>
+    <div class="bubble-layout">
+      <div class="bubble-card">
+        <div class="chart-title-row">
+          <div class="chart-title-text">RICE Score vs Esfuerzo · tamaño = # comerciales</div>
+          <div class="area-indicator" style="background:rgba(240,165,0,.1);color:var(--accent);">Demo</div>
+        </div>
+        <div class="bubble-container">
+          <canvas id="bubbleChart"></canvas>
+        </div>
+      </div>
+
+      <div>
+        <div class="project-panel" id="projectPanel"></div>
+
+        <div class="quadrant-legend">
+          <div class="q-legend-title">Cuadrantes</div>
+          <div class="q-legend-item">
+            <div class="q-dot" style="background:#22c55e"></div>
+            <div>
+              <div class="q-legend-text" style="color:#22c55e">Quick Wins</div>
+              <div class="q-legend-sub">Alto impacto · bajo esfuerzo</div>
+            </div>
+          </div>
+          <div class="q-legend-item">
+            <div class="q-dot" style="background:#3b82f6"></div>
+            <div>
+              <div class="q-legend-text" style="color:#3b82f6">Apuestas Estratégicas</div>
+              <div class="q-legend-sub">Alto impacto · alto esfuerzo</div>
+            </div>
+          </div>
+          <div class="q-legend-item">
+            <div class="q-dot" style="background:#f0a500"></div>
+            <div>
+              <div class="q-legend-text" style="color:#f0a500">Fill-ins</div>
+              <div class="q-legend-sub">Bajo impacto · bajo esfuerzo</div>
+            </div>
+          </div>
+          <div class="q-legend-item">
+            <div class="q-dot" style="background:#ef4444"></div>
+            <div>
+              <div class="q-legend-text" style="color:#ef4444">Evitar</div>
+              <div class="q-legend-sub">Bajo impacto · alto esfuerzo</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="area-legend">
+          <div class="q-legend-title">Área funcional</div>
+          <div class="area-legend-row">
+            <div class="area-legend-dot" style="background:var(--ventas)"></div>
+            <div class="area-legend-label">Ventas</div>
+          </div>
+          <div class="area-legend-row">
+            <div class="area-legend-dot" style="background:var(--repuestos)"></div>
+            <div class="area-legend-label">Repuestos</div>
+          </div>
+          <div class="area-legend-row">
+            <div class="area-legend-dot" style="background:var(--taller)"></div>
+            <div class="area-legend-label">Taller</div>
+          </div>
+          <div class="area-legend-row">
+            <div class="area-legend-dot" style="background:var(--transversal)"></div>
+            <div class="area-legend-label">Transversal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bubble-summary" id="bubbleSummary"></div>
+
+    <div class="data-warning">
+      <div class="warning-dot"></div>
+      DATOS DEMO · Actualizar PROYECTOS[] con datos reales del Portafolio tras el assessment
+    </div>
   </div>
 
-  <div class="summary-bar cols-4" id="summaryBar"></div>
-
-</div>
+</div><!-- /wrapper -->
 
 <script>
-// ─── Data ────────────────────────────────────────────────────
-const DIMS = ['Personas','Tecnología','Gobernanza','Cliente','Operaciones','Innovación'];
+// ══════════════════════════════════════════════════════
+// ── DATA: RADAR ───────────────────────────────────────
+// ══════════════════════════════════════════════════════
+/*
+  Estructura: DATA[Comercial][Área] = [Personas, Tecnología, Gobernanza, Cliente, Operaciones, Innovación]
+  Escala: 1=Inicial  2=Emergente  3=Definido  4=Avanzado  5=Líder
+  Cómo actualizar: reemplaza los 6 números de cada array con el promedio del assessment
+*/
+const DATA = {
+  // ── FAHONDA ──────────────────────────────
+  'Fahonda':        { Ventas: [3,3,2,3,3,2], Repuestos: [2,2,2,2,3,2], Taller: [2,3,2,2,2,2] },
+  // ── SUZUKI ───────────────────────────────
+  'Suzuki':         { Ventas: [4,3,3,4,3,3], Repuestos: [3,3,2,3,3,2], Taller: [3,3,3,3,3,2] },
+  // ── CADISA ───────────────────────────────
+  'Cadisa':         { Ventas: [2,2,2,2,2,2], Repuestos: [2,2,1,2,2,1], Taller: [1,2,1,2,2,1] },
+  // ── MOTO PREMIUM ─────────────────────────
+  'Moto Premium':   { Ventas: [3,4,3,3,4,3], Repuestos: [3,3,3,3,3,2], Taller: [3,4,3,3,3,3] },
+  // ── INDY MOTOS ───────────────────────────
+  'Indy Motos':     { Ventas: [2,3,2,2,3,2], Repuestos: [2,2,2,2,2,2], Taller: [2,2,2,2,3,2] },
+  // ── ESSA ─────────────────────────────────
+  'ESSA':           { Ventas: [3,3,3,3,3,2], Repuestos: [3,3,2,3,3,2], Taller: [2,3,2,3,3,2] },
+  // ── HIPERTIENDA ──────────────────────────
+  'Hipertienda':    { Ventas: [4,4,3,4,4,3], Repuestos: [3,4,3,3,4,3], Taller: [3,4,3,4,4,3] },
+  // ── HIPERTIENDASV ────────────────────────
+  'HipertiendaSV':  { Ventas: [3,3,2,3,3,2], Repuestos: [2,3,2,2,3,2], Taller: [2,3,2,3,3,2] },
+};
+
+// ══════════════════════════════════════════════════════
+// ── DATA: PORTAFOLIO ──────────────────────────────────
+// ══════════════════════════════════════════════════════
+/*
+  Campos:
+    nombre      : string
+    area        : 'Ventas' | 'Repuestos' | 'Taller' | 'Transversal'
+    estado      : string (para referencia)
+    reach       : número de comerciales impactadas (1-8)
+    gapCierra   : puntos de radar que mueve (0.5-2.0), null si no definido
+    effort      : 1=Pequeño  2=Mediano  3=Grande
+    confidence  : 50 | 80 | 100
+    okrLinked   : true | false
+    notas       : string opcional
+*/
+const PROYECTOS = [
+  {
+    nombre:     'Bunker F2 — UTM Tracking',
+    area:       'Transversal',
+    estado:     '🏃 En Sprint',
+    reach:      8,
+    gapCierra:  null,   // ← pendiente: llenar tras definir OKRs
+    effort:     2,
+    confidence: 80,
+    okrLinked:  false,
+    notas:      'Conectar activos digitales con medición de medios'
+  },
+  {
+    nombre:     'Adjudicador',
+    area:       'Transversal',
+    estado:     '🏃 En Sprint',
+    reach:      8,
+    gapCierra:  null,   // ← pendiente
+    effort:     3,
+    confidence: 80,
+    okrLinked:  false,
+    notas:      'Gobernanza de asignación de unidades'
+  },
+  {
+    nombre:     'Bunker F1 — Conexión Activos',
+    area:       'Transversal',
+    estado:     '🏃 En Sprint',
+    reach:      8,
+    gapCierra:  null,   // ← pendiente
+    effort:     3,
+    confidence: 80,
+    okrLinked:  false,
+    notas:      'Base de datos unificada de activos digitales'
+  },
+  // ── PROYECTOS EJEMPLO (borrar cuando tengas datos reales) ──
+  {
+    nombre:     'CRM Ventas — Ejemplo',
+    area:       'Ventas',
+    estado:     '📥 Propuesto',
+    reach:      5,
+    gapCierra:  1.2,
+    effort:     2,
+    confidence: 80,
+    okrLinked:  true,
+    notas:      'Ejemplo: impact medio, esfuerzo bajo'
+  },
+  {
+    nombre:     'Portal Taller Digital — Ejemplo',
+    area:       'Taller',
+    estado:     '📥 Propuesto',
+    reach:      6,
+    gapCierra:  1.8,
+    effort:     3,
+    confidence: 100,
+    okrLinked:  true,
+    notas:      'Ejemplo: apuesta estratégica'
+  },
+  {
+    nombre:     'Stock Predictor — Ejemplo',
+    area:       'Repuestos',
+    estado:     '🔍 Evaluado',
+    reach:      4,
+    gapCierra:  0.6,
+    effort:     1,
+    confidence: 80,
+    okrLinked:  true,
+    notas:      'Ejemplo: quick win'
+  },
+];
+
+// ══════════════════════════════════════════════════════
+// ── CONSTANTS ─────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+const DIMS  = ['Personas','Tecnología','Gobernanza','Cliente','Operaciones','Innovación'];
 const AREAS = ['Ventas','Repuestos','Taller'];
-const COMERCIALES_LIST = ['Fahonda','ESSA','HipertiendaSV','Suzuki','Cadisa','Moto Premium','Hipertienda','Indy Motos'];
+const COMS  = Object.keys(DATA);
 
 const AREA_COLORS = {
-  Ventas:    { line: '#3b82f6', fill: 'rgba(59,130,246,0.10)'  },
-  Repuestos: { line: '#f97316', fill: 'rgba(249,115,22,0.10)'  },
-  Taller:    { line: '#22c55e', fill: 'rgba(34,197,94,0.10)'   },
-  Global:    { line: '#a78bfa', fill: 'rgba(167,139,250,0.08)' }
+  Ventas:    { line: '#3b82f6', fill: 'rgba(59,130,246,0.12)' },
+  Repuestos: { line: '#f97316', fill: 'rgba(249,115,22,0.12)' },
+  Taller:    { line: '#22c55e', fill: 'rgba(34,197,94,0.12)' },
+};
+const FUNC_COLORS = {
+  Ventas:       '#3b82f6',
+  Repuestos:    '#f97316',
+  Taller:       '#22c55e',
+  Transversal:  '#a78bfa',
 };
 
-const DATA = {
-  Fahonda:        { Ventas: [4,3,4,3,4,3], Repuestos: [3,3,4,2,3,2], Taller: [4,4,3,4,3,3] },
-  ESSA:           { Ventas: [2,2,3,2,3,2], Repuestos: [2,2,2,2,2,1], Taller: [3,2,2,2,3,2] },
-  HipertiendaSV:  { Ventas: [3,3,3,3,3,3], Repuestos: [3,3,3,3,3,2], Taller: [3,3,3,3,3,3] },
-  Suzuki:         { Ventas: [4,4,4,4,4,4], Repuestos: [4,3,4,3,4,3], Taller: [4,4,4,3,4,4] },
-  Cadisa:         { Ventas: [2,3,2,3,2,2], Repuestos: [2,2,3,2,3,2], Taller: [2,2,2,2,2,2] },
-  'Moto Premium': { Ventas: [3,4,3,4,3,3], Repuestos: [3,3,3,3,3,3], Taller: [3,3,3,4,3,3] },
-  Hipertienda:    { Ventas: [1,2,1,2,2,1], Repuestos: [2,1,2,1,2,1], Taller: [1,2,1,2,1,2] },
-  'Indy Motos':   { Ventas: [3,3,4,3,3,3], Repuestos: [3,4,3,3,4,3], Taller: [3,3,3,3,3,4] }
-};
-
-// ─── Helpers ─────────────────────────────────────────────────
-const mean = arr => +( arr.reduce((a,b)=>a+b,0) / arr.length ).toFixed(2);
-
-function groupAvg(area) {
-  return DIMS.map((_,i) =>
-    +( COMERCIALES_LIST.reduce((s,c)=>s+DATA[c][area][i],0) / COMERCIALES_LIST.length ).toFixed(1)
-  );
-}
-
-function globalGroupAvg() {
-  return DIMS.map((_,i) => {
-    const tot = COMERCIALES_LIST.reduce((s,c)=>s+AREAS.reduce((sa,a)=>sa+DATA[c][a][i],0),0);
-    return +( tot / (COMERCIALES_LIST.length * AREAS.length) ).toFixed(1);
-  });
-}
-
-function globalComData(com) {
-  return DIMS.map((_,i) =>
-    +( AREAS.reduce((s,a)=>s+DATA[com][a][i],0) / AREAS.length ).toFixed(1)
-  );
-}
-
-function diffLabel(d) { return d > 0 ? `+${d}` : d === 0 ? '=' : `${d}`; }
-function diffClass(d) { return d > 0 ? 'diff-pos' : d < 0 ? 'diff-neg' : 'diff-zero'; }
-function clrClass(d)  { return d > 0 ? 'clr-better' : d < 0 ? 'clr-worse' : 'clr-neutral'; }
-
-// ─── State ───────────────────────────────────────────────────
-let currentArea = 'Global';
+// ══════════════════════════════════════════════════════
+// ── RADAR STATE ───────────────────────────────────────
+// ══════════════════════════════════════════════════════
 let currentCom  = 'Fahonda';
+let currentArea = 'Global';
 let radarChart;
 
-// ─── Datasets factory ────────────────────────────────────────
+const mean = arr => +( arr.reduce((a,b)=>a+b,0)/arr.length ).toFixed(2);
+
+function groupAvg(area) {
+  return DIMS.map((_, i) =>
+    +( COMS.reduce((s,c)=>s+DATA[c][area][i],0)/COMS.length ).toFixed(1)
+  );
+}
+function globalGroupAvg() {
+  return DIMS.map((_, i) =>
+    +( COMS.reduce((s,c)=>s+(DATA[c].Ventas[i]+DATA[c].Repuestos[i]+DATA[c].Taller[i])/3,0)/COMS.length ).toFixed(1)
+  );
+}
+
+function diffClass(d) { return d > 0 ? 'pos' : d < 0 ? 'neg' : 'neu'; }
+function diffLabel(d) { return d > 0 ? `+${d}` : `${d}`; }
+function clrClass(d)  { return d > 0 ? 'clr-taller' : d < 0 ? '' : ''; }
+
 function makeDatasets() {
   if (currentArea === 'Global') {
-    const sets = AREAS.map(area => ({
-      label: area,
-      data: DATA[currentCom][area],
-      borderColor: AREA_COLORS[area].line,
-      backgroundColor: AREA_COLORS[area].fill,
-      borderWidth: 2.2,
-      pointBackgroundColor: AREA_COLORS[area].line,
-      pointBorderColor: '#0b0c10',
-      pointBorderWidth: 2,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-      tension: 0.1
-    }));
-    sets.push({
-      label: 'Promedio grupo',
-      data: globalGroupAvg(),
-      borderColor: 'rgba(255,255,255,0.2)',
-      backgroundColor: 'rgba(255,255,255,0.02)',
-      borderWidth: 1.5,
-      borderDash: [5,4],
-      pointBackgroundColor: 'rgba(255,255,255,0.35)',
-      pointBorderColor: '#0b0c10',
-      pointBorderWidth: 1,
-      pointRadius: 3,
-      pointHoverRadius: 5,
-      tension: 0.1
-    });
-    return sets;
+    const grpLine = { color:'rgba(255,255,255,0.2)', fill:'rgba(255,255,255,0.02)', dash:[5,4] };
+    return [
+      ...AREAS.map(a => ({
+        label: a,
+        data: DATA[currentCom][a],
+        borderColor: AREA_COLORS[a].line,
+        backgroundColor: AREA_COLORS[a].fill,
+        borderWidth: 2.5,
+        pointBackgroundColor: AREA_COLORS[a].line,
+        pointBorderColor: '#0b0c10', pointBorderWidth: 2,
+        pointRadius: 5, pointHoverRadius: 7, tension: 0.1
+      })),
+      {
+        label: 'Promedio grupo',
+        data: globalGroupAvg(),
+        borderColor: grpLine.color, backgroundColor: grpLine.fill,
+        borderWidth: 1.5, borderDash: [5,4],
+        pointBackgroundColor: 'rgba(255,255,255,0.35)',
+        pointBorderColor: '#0b0c10', pointBorderWidth: 1,
+        pointRadius: 3, pointHoverRadius: 5, tension: 0.1
+      }
+    ];
   } else {
     const c = AREA_COLORS[currentArea];
     return [
       {
         label: currentCom,
         data: DATA[currentCom][currentArea],
-        borderColor: c.line,
-        backgroundColor: c.fill,
+        borderColor: c.line, backgroundColor: c.fill,
         borderWidth: 2.5,
         pointBackgroundColor: c.line,
-        pointBorderColor: '#0b0c10',
-        pointBorderWidth: 2,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        tension: 0.1
+        pointBorderColor: '#0b0c10', pointBorderWidth: 2,
+        pointRadius: 5, pointHoverRadius: 7, tension: 0.1
       },
       {
         label: 'Promedio grupo',
         data: groupAvg(currentArea),
-        borderColor: 'rgba(255,255,255,0.2)',
-        backgroundColor: 'rgba(255,255,255,0.02)',
-        borderWidth: 1.5,
-        borderDash: [5,4],
+        borderColor: 'rgba(255,255,255,0.2)', backgroundColor: 'rgba(255,255,255,0.02)',
+        borderWidth: 1.5, borderDash: [5,4],
         pointBackgroundColor: 'rgba(255,255,255,0.35)',
-        pointBorderColor: '#0b0c10',
-        pointBorderWidth: 1,
-        pointRadius: 3,
-        pointHoverRadius: 5,
-        tension: 0.1
+        pointBorderColor: '#0b0c10', pointBorderWidth: 1,
+        pointRadius: 3, pointHoverRadius: 5, tension: 0.1
       }
     ];
   }
 }
 
-// ─── Init chart ──────────────────────────────────────────────
-function buildChart() {
+function buildRadar() {
   const ctx = document.getElementById('radarChart').getContext('2d');
   radarChart = new Chart(ctx, {
     type: 'radar',
     data: { labels: DIMS, datasets: makeDatasets() },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       animation: { duration: 450, easing: 'easeInOutQuart' },
       scales: {
         r: {
           min: 0, max: 5,
           ticks: {
-            stepSize: 1,
-            display: true,
+            stepSize: 1, display: true,
             color: 'rgba(255,255,255,0.18)',
             font: { family: 'DM Mono', size: 9 },
             backdropColor: 'transparent',
@@ -515,22 +904,17 @@ function buildChart() {
           angleLines:  { color: 'rgba(255,255,255,0.06)' },
           pointLabels: {
             color: 'rgba(232,234,240,0.85)',
-            font: { family: 'Syne', size: 12, weight: '600' },
-            padding: 12
+            font: { family: 'Syne', size: 12, weight: '600' }, padding: 12
           }
         }
       },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#1a1d28',
-          borderColor: 'rgba(255,255,255,0.1)',
-          borderWidth: 1,
-          titleColor: '#f0a500',
-          bodyColor: '#e8eaf0',
+          backgroundColor: '#1a1d28', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+          titleColor: '#f0a500', bodyColor: '#e8eaf0',
           titleFont: { family: 'Syne', size: 12, weight: '700' },
-          bodyFont:  { family: 'DM Mono', size: 12 },
-          padding: 12,
+          bodyFont:  { family: 'DM Mono', size: 12 }, padding: 12,
           callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw} / 5` }
         }
       }
@@ -538,41 +922,33 @@ function buildChart() {
   });
 }
 
-// ─── Legend ──────────────────────────────────────────────────
 function updateLegend() {
   const el = document.getElementById('legend');
   let html = '';
   if (currentArea === 'Global') {
     html = AREAS.map(a =>
       `<div class="legend-item">
-         <div class="legend-swatch" style="background:${AREA_COLORS[a].line}"></div>
-         <span>${a}</span>
-       </div>`
-    ).join('');
+        <div class="legend-swatch" style="background:${AREA_COLORS[a].line}"></div>
+        <span>${a}</span>
+      </div>`).join('');
   } else {
     html = `<div class="legend-item">
-              <div class="legend-swatch" style="background:${AREA_COLORS[currentArea].line}"></div>
-              <span>${currentCom}</span>
-            </div>`;
+      <div class="legend-swatch" style="background:${AREA_COLORS[currentArea].line}"></div>
+      <span>${currentCom}</span>
+    </div>`;
   }
-  html += `<div class="legend-item">
-             <div class="legend-swatch dashed"></div>
-             <span>Promedio grupo</span>
-           </div>`;
+  html += `<div class="legend-item"><div class="legend-swatch dashed"></div><span>Promedio grupo</span></div>`;
   el.innerHTML = html;
 }
 
-// ─── Scores panel ────────────────────────────────────────────
 function updateScores() {
   const panel = document.getElementById('scoresPanel');
-
   if (currentArea === 'Global') {
     panel.innerHTML = DIMS.map((dim, i) => {
       const vals = AREAS.map(a => DATA[currentCom][a][i]);
       const comG = +( vals.reduce((a,b)=>a+b,0)/3 ).toFixed(1);
       const grpG = globalGroupAvg()[i];
       const diff = +( comG - grpG ).toFixed(1);
-
       const bars = AREAS.map(a => {
         const v = DATA[currentCom][a][i];
         return `<div class="area-bar-row">
@@ -583,7 +959,6 @@ function updateScores() {
           <span class="area-bar-val" style="color:${AREA_COLORS[a].line}">${v}</span>
         </div>`;
       }).join('');
-
       return `<div class="score-card">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div class="score-dim">${dim}</div>
@@ -592,17 +967,14 @@ function updateScores() {
         <div class="area-bars">${bars}</div>
       </div>`;
     }).join('');
-
   } else {
     const comData = DATA[currentCom][currentArea];
     const avgData = groupAvg(currentArea);
     const c = AREA_COLORS[currentArea];
-
     panel.innerHTML = DIMS.map((dim, i) => {
       const val  = comData[i];
       const avg  = avgData[i];
       const diff = +( val - avg ).toFixed(1);
-
       return `<div class="score-card">
         <div class="score-dim">${dim}</div>
         <div class="score-row">
@@ -625,34 +997,17 @@ function updateScores() {
   }
 }
 
-// ─── Summary bar ─────────────────────────────────────────────
 function updateSummary() {
   const bar = document.getElementById('summaryBar');
-
   if (currentArea === 'Global') {
     bar.className = 'summary-bar cols-4';
     const scores = AREAS.map(a => mean(DATA[currentCom][a]));
     const global = +( scores.reduce((a,b)=>a+b,0)/3 ).toFixed(2);
-    const grpG   = +( globalGroupAvg().reduce((a,b)=>a+b,0)/6 ).toFixed(2);
-    const diff   = +( global - grpG ).toFixed(2);
-
     bar.innerHTML = `
-      <div class="summary-item">
-        <div class="summary-num clr-global">${global}</div>
-        <div class="summary-lbl">Score global</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-num clr-ventas">${scores[0]}</div>
-        <div class="summary-lbl">Ventas</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-num clr-repuestos">${scores[1]}</div>
-        <div class="summary-lbl">Repuestos</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-num clr-taller">${scores[2]}</div>
-        <div class="summary-lbl">Taller</div>
-      </div>`;
+      <div class="summary-item"><div class="summary-num clr-global">${global}</div><div class="summary-lbl">Score global</div></div>
+      <div class="summary-item"><div class="summary-num clr-ventas">${scores[0]}</div><div class="summary-lbl">Ventas</div></div>
+      <div class="summary-item"><div class="summary-num clr-repuestos">${scores[1]}</div><div class="summary-lbl">Repuestos</div></div>
+      <div class="summary-item"><div class="summary-num clr-taller">${scores[2]}</div><div class="summary-lbl">Taller</div></div>`;
   } else {
     bar.className = 'summary-bar cols-3';
     const comData = DATA[currentCom][currentArea];
@@ -660,24 +1015,13 @@ function updateSummary() {
     const comAvg  = mean(comData);
     const grpAvg  = mean(avgData);
     const diff    = +( comAvg - grpAvg ).toFixed(2);
-
     bar.innerHTML = `
-      <div class="summary-item">
-        <div class="summary-num" style="color:${AREA_COLORS[currentArea].line}">${comAvg}</div>
-        <div class="summary-lbl">Score comercial</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-num" style="color:rgba(255,255,255,0.35)">${grpAvg}</div>
-        <div class="summary-lbl">Promedio grupo</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-num ${clrClass(diff)}">${diffLabel(diff)}</div>
-        <div class="summary-lbl">vs Grupo</div>
-      </div>`;
+      <div class="summary-item"><div class="summary-num" style="color:${AREA_COLORS[currentArea].line}">${comAvg}</div><div class="summary-lbl">Score comercial</div></div>
+      <div class="summary-item"><div class="summary-num" style="color:rgba(255,255,255,0.35)">${grpAvg}</div><div class="summary-lbl">Promedio grupo</div></div>
+      <div class="summary-item"><div class="summary-num ${clrClass(diff)}">${diffLabel(diff)}</div><div class="summary-lbl">vs Grupo</div></div>`;
   }
 }
 
-// ─── Header labels ───────────────────────────────────────────
 function updateLabels() {
   const ind = document.getElementById('areaIndicator');
   ind.textContent = currentArea;
@@ -691,30 +1035,303 @@ function updateLabels() {
   document.getElementById('chartTitleText').textContent = titles[currentArea];
 }
 
-// ─── Full render ─────────────────────────────────────────────
-function render() {
+function renderRadar() {
   if (radarChart) { radarChart.data.datasets = makeDatasets(); radarChart.update(); }
-  updateLabels();
-  updateLegend();
-  updateScores();
-  updateSummary();
+  updateLabels(); updateLegend(); updateScores(); updateSummary();
 }
 
-// ─── Events ──────────────────────────────────────────────────
 function setArea(area) {
   currentArea = area;
   document.querySelectorAll('.tab').forEach(t =>
     t.classList.toggle('active', t.dataset.area === area));
-  render();
+  renderRadar();
 }
 
 document.getElementById('comercialSelect').addEventListener('change', e => {
-  currentCom = e.target.value;
-  render();
+  currentCom = e.target.value; renderRadar();
 });
 
-// ─── Boot ────────────────────────────────────────────────────
-buildChart();
+// ══════════════════════════════════════════════════════
+// ── BUBBLE CHART: PORTAFOLIO ──────────────────────────
+// ══════════════════════════════════════════════════════
+function calcImpact(gapCierra) {
+  if (!gapCierra) return 1;
+  if (gapCierra >= 1.5) return 3;
+  if (gapCierra >= 0.8) return 2;
+  return 1;
+}
+
+function calcRICE(p) {
+  const impact = calcImpact(p.gapCierra);
+  return +( (p.reach * impact * p.confidence) / (p.effort * 100) ).toFixed(2);
+}
+
+function getQuadrant(rice, effort) {
+  const riceThresh = 8;  // midpoint for "high" RICE
+  const effortThresh = 2; // midpoint for effort
+  if (rice >= riceThresh && effort <= effortThresh) return 'qw';   // Quick Win
+  if (rice >= riceThresh && effort >  effortThresh) return 'bet';  // Apuesta
+  if (rice <  riceThresh && effort <= effortThresh) return 'fil';  // Fill-in
+  return 'avo'; // Evitar
+}
+
+const Q_LABELS = {
+  qw:  { text:'Quick Win',           color:'#22c55e' },
+  bet: { text:'Apuesta Estratégica', color:'#3b82f6' },
+  fil: { text:'Fill-in',             color:'#f0a500' },
+  avo: { text:'Evitar',              color:'#ef4444' },
+};
+
+let bubbleChart;
+let highlightedIdx = null;
+
+function buildBubble() {
+  const ctx = document.getElementById('bubbleChart').getContext('2d');
+
+  const datasets = PROYECTOS.map((p, idx) => {
+    const rice = calcRICE(p);
+    const color = FUNC_COLORS[p.area];
+    return {
+      label: p.nombre,
+      data: [{
+        x: p.effort,
+        y: rice,
+        r: Math.max(6, p.reach * 3.5)
+      }],
+      backgroundColor: color + '55',
+      borderColor: color,
+      borderWidth: 2,
+      hoverBorderWidth: 3,
+      hoverBorderColor: '#f0a500',
+      _idx: idx
+    };
+  });
+
+  bubbleChart = new Chart(ctx, {
+    type: 'bubble',
+    data: { datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 500, easing: 'easeInOutQuart' },
+      scales: {
+        x: {
+          min: 0, max: 4,
+          title: {
+            display: true,
+            text: 'Esfuerzo →',
+            color: 'rgba(255,255,255,0.3)',
+            font: { family: 'DM Mono', size: 10 },
+          },
+          ticks: {
+            color: 'rgba(255,255,255,0.3)',
+            font: { family: 'DM Mono', size: 10 },
+            callback: v => v === 1 ? 'Pequeño' : v === 2 ? 'Mediano' : v === 3 ? 'Grande' : ''
+          },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          border: { color: 'rgba(255,255,255,0.08)' }
+        },
+        y: {
+          min: 0,
+          title: {
+            display: true,
+            text: 'RICE Score ↑',
+            color: 'rgba(255,255,255,0.3)',
+            font: { family: 'DM Mono', size: 10 },
+          },
+          ticks: { color: 'rgba(255,255,255,0.3)', font: { family: 'DM Mono', size: 10 } },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          border: { color: 'rgba(255,255,255,0.08)' }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1d28',
+          borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+          titleColor: '#f0a500', bodyColor: '#e8eaf0',
+          titleFont: { family: 'Syne', size: 12, weight: '700' },
+          bodyFont:  { family: 'DM Mono', size: 11 },
+          padding: 14,
+          callbacks: {
+            title: items => PROYECTOS[items[0].datasetIndex].nombre,
+            label: item => {
+              const p = PROYECTOS[item.datasetIndex];
+              const rice = calcRICE(p);
+              const impact = calcImpact(p.gapCierra);
+              const q = getQuadrant(rice, p.effort);
+              return [
+                ` RICE Score: ${rice}`,
+                ` Área: ${p.area}`,
+                ` Reach: ${p.reach} comerciales`,
+                ` Impact: ${impact}${p.gapCierra ? '' : ' (sin OKR)'}`,
+                ` Esfuerzo: ${['','Pequeño','Mediano','Grande'][p.effort]}`,
+                ` Cuadrante: ${Q_LABELS[q].text}`,
+              ];
+            }
+          }
+        }
+      },
+      // Draw quadrant lines as annotation plugin workaround via afterDraw
+    },
+    plugins: [{
+      id: 'quadrantLines',
+      afterDraw(chart) {
+        const { ctx, chartArea: { left, right, top, bottom }, scales } = chart;
+        const xMid = scales.x.getPixelForValue(2);
+        const yMid = scales.y.getPixelForValue(8);
+
+        ctx.save();
+        ctx.setLineDash([4, 6]);
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+        ctx.lineWidth = 1;
+
+        // vertical midline
+        ctx.beginPath(); ctx.moveTo(xMid, top); ctx.lineTo(xMid, bottom); ctx.stroke();
+        // horizontal midline
+        ctx.beginPath(); ctx.moveTo(left, yMid); ctx.lineTo(right, yMid); ctx.stroke();
+        ctx.restore();
+
+        // Quadrant background tints
+        const quads = [
+          { x: left,  y: top,   w: xMid-left,   h: yMid-top,    color: 'rgba(59,130,246,0.03)'  }, // top-left: Apuesta
+          { x: xMid,  y: top,   w: right-xMid,  h: yMid-top,    color: 'rgba(34,197,94,0.04)'   }, // top-right: Quick Win
+          { x: left,  y: yMid,  w: xMid-left,   h: bottom-yMid, color: 'rgba(239,68,68,0.03)'   }, // bot-left: Evitar
+          { x: xMid,  y: yMid,  w: right-xMid,  h: bottom-yMid, color: 'rgba(240,165,0,0.03)'   }, // bot-right: Fill-in
+        ];
+        quads.forEach(q => {
+          ctx.save();
+          ctx.fillStyle = q.color;
+          ctx.fillRect(q.x, q.y, q.w, q.h);
+          ctx.restore();
+        });
+
+        // Quadrant labels
+        const qlabels = [
+          { text: '● Apuesta',  x: left+8,  y: top+14,    color: 'rgba(59,130,246,0.5)' },
+          { text: '● Quick Win',x: xMid+8,  y: top+14,    color: 'rgba(34,197,94,0.5)' },
+          { text: '● Evitar',   x: left+8,  y: bottom-8,  color: 'rgba(239,68,68,0.5)' },
+          { text: '● Fill-in',  x: xMid+8,  y: bottom-8,  color: 'rgba(240,165,0,0.5)' },
+        ];
+        qlabels.forEach(l => {
+          ctx.save();
+          ctx.font = '500 9px DM Mono, monospace';
+          ctx.fillStyle = l.color;
+          ctx.fillText(l.text, l.x, l.y);
+          ctx.restore();
+        });
+      }
+    }]
+  });
+}
+
+function renderProjectPanel() {
+  const panel = document.getElementById('projectPanel');
+  panel.innerHTML = PROYECTOS.map((p, idx) => {
+    const rice = calcRICE(p);
+    const maxRice = Math.max(...PROYECTOS.map(calcRICE), 1);
+    const color = FUNC_COLORS[p.area];
+    const q = getQuadrant(rice, p.effort);
+    const missing = [];
+    if (!p.okrLinked) missing.push('OKR');
+    if (!p.gapCierra) missing.push('Gap');
+
+    return `<div class="project-card" id="pcard-${idx}"
+      onmouseenter="highlightBubble(${idx})"
+      onmouseleave="unhighlightBubble()">
+      <div class="project-area-bar" style="background:${color}"></div>
+      <div class="project-name">${p.nombre}</div>
+      <div class="project-meta">
+        <span class="project-tag">${p.area}</span>
+        <span class="project-tag">${p.estado}</span>
+        <span class="project-tag rice">RICE ${rice}</span>
+        <span class="project-tag quadrant-${q}">${Q_LABELS[q].text}</span>
+      </div>
+      <div class="project-rice-row">
+        <div class="rice-bar-track">
+          <div class="rice-bar-fill" style="width:${rice/maxRice*100}%;background:${color}"></div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);min-width:28px;text-align:right">${rice}</span>
+      </div>
+      ${missing.length ? `<div style="margin-top:8px;padding-left:8px;font-family:'DM Mono',monospace;font-size:9px;color:rgba(239,68,68,0.7)">⚠ falta: ${missing.join(', ')}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderBubbleSummary() {
+  const rices = PROYECTOS.map(calcRICE);
+  const maxRice = Math.max(...rices);
+  const incompletos = PROYECTOS.filter(p => !p.okrLinked || !p.gapCierra).length;
+  const quickWins  = PROYECTOS.filter(p => getQuadrant(calcRICE(p), p.effort) === 'qw').length;
+  const totalReach = [...new Set(PROYECTOS.reduce((acc, p) => [...acc, ...Array(p.reach).fill(0).map((_,i)=>i+1)], []))].length;
+
+  document.getElementById('bubbleSummary').innerHTML = `
+    <div class="bsum-card">
+      <div class="bsum-num" style="color:var(--accent)">${PROYECTOS.length}</div>
+      <div class="bsum-lbl">Proyectos</div>
+    </div>
+    <div class="bsum-card">
+      <div class="bsum-num" style="color:#22c55e">${quickWins}</div>
+      <div class="bsum-lbl">Quick Wins</div>
+    </div>
+    <div class="bsum-card">
+      <div class="bsum-num" style="color:var(--accent)">${maxRice}</div>
+      <div class="bsum-lbl">RICE Máx</div>
+    </div>
+    <div class="bsum-card">
+      <div class="bsum-num" style="color:${incompletos > 0 ? '#ef4444' : '#22c55e'}">${incompletos}</div>
+      <div class="bsum-lbl">Sin OKR/Gap</div>
+    </div>`;
+}
+
+function highlightBubble(idx) {
+  if (!bubbleChart) return;
+  bubbleChart.data.datasets.forEach((ds, i) => {
+    ds.borderWidth = i === idx ? 4 : 1;
+    ds.borderColor = i === idx ? '#f0a500' : FUNC_COLORS[PROYECTOS[i].area];
+    ds.backgroundColor = i === idx
+      ? FUNC_COLORS[PROYECTOS[i].area] + 'AA'
+      : FUNC_COLORS[PROYECTOS[i].area] + '33';
+  });
+  bubbleChart.update('none');
+}
+
+function unhighlightBubble() {
+  if (!bubbleChart) return;
+  bubbleChart.data.datasets.forEach((ds, i) => {
+    ds.borderWidth = 2;
+    ds.borderColor = FUNC_COLORS[PROYECTOS[i].area];
+    ds.backgroundColor = FUNC_COLORS[PROYECTOS[i].area] + '55';
+  });
+  bubbleChart.update('none');
+}
+
+// ══════════════════════════════════════════════════════
+// ── PAGE NAVIGATION ───────────────────────────────────
+// ══════════════════════════════════════════════════════
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.page-tab').forEach(t => {
+    if (t.textContent.toLowerCase().includes(page === 'radar' ? 'radar' : 'portafolio'))
+      t.classList.add('active');
+  });
+
+  // Build bubble chart on first visit
+  if (page === 'portafolio' && !bubbleChart) {
+    setTimeout(() => {
+      buildBubble();
+      renderProjectPanel();
+      renderBubbleSummary();
+    }, 50);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// ── BOOT ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+buildRadar();
 updateLabels();
 updateLegend();
 updateScores();
