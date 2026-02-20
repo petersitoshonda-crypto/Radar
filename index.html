@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar de Madurez Digital — Apex Q1 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0c10;
+    --surface: #13151c;
+    --surface2: #1a1d28;
+    --border: #252836;
+    --accent: #f0a500;
+    --accent2: #e05c2a;
+    --text: #e8eaf0;
+    --text-muted: #6b7080;
+    --ventas: #3b82f6;
+    --repuestos: #f97316;
+    --taller: #22c55e;
+    --global: #a78bfa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+  }
+
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  h1 { font-size: 26px; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+  h1 span { color: var(--accent); }
+
+  .badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+  .badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+  .badge.demo { border-color: var(--accent2); color: var(--accent2); }
+
+  .selector-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+
+  .selector-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 36px 10px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7080' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    min-width: 180px;
+    transition: border-color 0.2s;
+  }
+  select:hover, select:focus { border-color: var(--accent); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px;
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active[data-area="Global"]    { background: rgba(167,139,250,0.15); color: var(--global);    border-color: rgba(167,139,250,0.3); }
+  .tab.active[data-area="Ventas"]    { background: rgba(59,130,246,0.15);  color: var(--ventas);    border-color: rgba(59,130,246,0.3); }
+  .tab.active[data-area="Repuestos"] { background: rgba(249,115,22,0.15);  color: var(--repuestos); border-color: rgba(249,115,22,0.3); }
+  .tab.active[data-area="Taller"]    { background: rgba(34,197,94,0.15);   color: var(--taller);    border-color: rgba(34,197,94,0.3); }
+
+  /* Layout */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chart-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(240,165,0,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .chart-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .chart-title-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .area-indicator {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .area-indicator.Global    { background: rgba(167,139,250,0.15); color: var(--global); }
+  .area-indicator.Ventas    { background: rgba(59,130,246,0.15);  color: var(--ventas); }
+  .area-indicator.Repuestos { background: rgba(249,115,22,0.15);  color: var(--repuestos); }
+  .area-indicator.Taller    { background: rgba(34,197,94,0.15);   color: var(--taller); }
+
+  .chart-container { position: relative; height: 380px; }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .legend-swatch {
+    width: 24px; height: 2.5px;
+    border-radius: 2px;
+  }
+  .legend-swatch.dashed {
+    background: repeating-linear-gradient(90deg,
+      rgba(255,255,255,0.3) 0, rgba(255,255,255,0.3) 4px,
+      transparent 4px, transparent 8px);
+  }
+
+  /* Scores panel */
+  .scores-panel { display: flex; flex-direction: column; gap: 10px; }
+
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    transition: border-color 0.2s;
+  }
+  .score-card:hover { border-color: rgba(240,165,0,0.25); }
+
+  .score-dim {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* Global mode: mini area bars */
+  .area-bars { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+  .area-bar-row { display: flex; align-items: center; gap: 6px; }
+  .area-bar-label { font-family: 'DM Mono', monospace; font-size: 9px; width: 22px; flex-shrink: 0; }
+  .area-bar-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+  .area-bar-fill  { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+  .area-bar-val   { font-family: 'DM Mono', monospace; font-size: 10px; width: 14px; text-align: right; flex-shrink: 0; }
+
+  /* Single-area mode */
+  .score-row { display: flex; align-items: center; justify-content: space-between; margin-top: 5px; }
+  .score-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); }
+  .score-value { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
+  .score-bar-track {
+    height: 3px; background: var(--border); border-radius: 2px;
+    margin-top: 6px; position: relative;
+  }
+  .score-bar-fill-single { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+  .score-bar-avg {
+    position: absolute; top: -3px; width: 2px; height: 9px;
+    background: rgba(255,255,255,0.25); border-radius: 1px;
+    transform: translateX(-50%); transition: left 0.5s ease;
+  }
+
+  .diff-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; padding: 1px 5px; border-radius: 2px; font-weight: 500;
+  }
+  .diff-pos  { background: rgba(34,197,94,0.15);  color: #22c55e; }
+  .diff-neg  { background: rgba(239,68,68,0.15);  color: #ef4444; }
+  .diff-zero { background: var(--border); color: var(--text-muted); }
+
+  /* Summary bar */
+  .summary-bar {
+    margin-top: 20px;
+    display: grid;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .summary-bar.cols-3 { grid-template-columns: repeat(3,1fr); }
+  .summary-bar.cols-4 { grid-template-columns: repeat(4,1fr); }
+
+  .summary-item { background: var(--surface); padding: 14px 12px; text-align: center; }
+
+  .summary-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px; font-weight: 500;
+    color: var(--accent); line-height: 1; margin-bottom: 4px;
+  }
+  .summary-lbl {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .clr-global    { color: var(--global) !important; }
+  .clr-ventas    { color: var(--ventas) !important; }
+  .clr-repuestos { color: var(--repuestos) !important; }
+  .clr-taller    { color: var(--taller) !important; }
+  .clr-better    { color: #22c55e !important; }
+  .clr-worse     { color: #ef4444 !important; }
+  .clr-neutral   { color: var(--text-muted) !important; }
+
+  @media (max-width: 700px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .scores-panel { display: grid; grid-template-columns: repeat(2,1fr); }
+    .summary-bar.cols-4 { grid-template-columns: repeat(2,1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="header-left">
+      <p class="eyebrow">Apex — Sistema de Transformación Digital</p>
+      <h1>Radar de <span>Madurez</span></h1>
+      <div class="badges">
+        <span class="badge">Q1 2026</span>
+        <span class="badge demo">● Datos de ejemplo</span>
+      </div>
+    </div>
+    <div class="selector-wrap">
+      <span class="selector-label">Comercial</span>
+      <select id="comercialSelect">
+        <option value="Fahonda">Fahonda</option>
+        <option value="ESSA">ESSA</option>
+        <option value="HipertiendaSV">HipertiendaSV</option>
+        <option value="Suzuki">Suzuki</option>
+        <option value="Cadisa">Cadisa</option>
+        <option value="Moto Premium">Moto Premium</option>
+        <option value="Hipertienda">Hipertienda</option>
+        <option value="Indy Motos">Indy Motos</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-area="Global"    onclick="setArea('Global')">🌐 Global</button>
+    <button class="tab"        data-area="Ventas"    onclick="setArea('Ventas')">📊 Ventas</button>
+    <button class="tab"        data-area="Repuestos" onclick="setArea('Repuestos')">📦 Repuestos</button>
+    <button class="tab"        data-area="Taller"    onclick="setArea('Taller')">🔧 Taller</button>
+  </div>
+
+  <div class="main-grid">
+    <div class="chart-card">
+      <div class="chart-title">
+        <span class="chart-title-text" id="chartTitleText">Perfil global — 3 áreas × 6 dimensiones</span>
+        <span class="area-indicator Global" id="areaIndicator">Global</span>
+      </div>
+      <div class="chart-container">
+        <canvas id="radarChart"></canvas>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <div class="scores-panel" id="scoresPanel"></div>
+  </div>
+
+  <div class="summary-bar cols-4" id="summaryBar"></div>
+
+</div>
+
+<script>
+// ─── Data ────────────────────────────────────────────────────
+const DIMS = ['Personas','Tecnología','Gobernanza','Cliente','Operaciones','Innovación'];
+const AREAS = ['Ventas','Repuestos','Taller'];
+const COMERCIALES_LIST = ['Fahonda','ESSA','HipertiendaSV','Suzuki','Cadisa','Moto Premium','Hipertienda','Indy Motos'];
+
+const AREA_COLORS = {
+  Ventas:    { line: '#3b82f6', fill: 'rgba(59,130,246,0.10)'  },
+  Repuestos: { line: '#f97316', fill: 'rgba(249,115,22,0.10)'  },
+  Taller:    { line: '#22c55e', fill: 'rgba(34,197,94,0.10)'   },
+  Global:    { line: '#a78bfa', fill: 'rgba(167,139,250,0.08)' }
+};
+
+const DATA = {
+  Fahonda:        { Ventas: [4,3,4,3,4,3], Repuestos: [3,3,4,2,3,2], Taller: [4,4,3,4,3,3] },
+  ESSA:           { Ventas: [2,2,3,2,3,2], Repuestos: [2,2,2,2,2,1], Taller: [3,2,2,2,3,2] },
+  HipertiendaSV:  { Ventas: [3,3,3,3,3,3], Repuestos: [3,3,3,3,3,2], Taller: [3,3,3,3,3,3] },
+  Suzuki:         { Ventas: [4,4,4,4,4,4], Repuestos: [4,3,4,3,4,3], Taller: [4,4,4,3,4,4] },
+  Cadisa:         { Ventas: [2,3,2,3,2,2], Repuestos: [2,2,3,2,3,2], Taller: [2,2,2,2,2,2] },
+  'Moto Premium': { Ventas: [3,4,3,4,3,3], Repuestos: [3,3,3,3,3,3], Taller: [3,3,3,4,3,3] },
+  Hipertienda:    { Ventas: [1,2,1,2,2,1], Repuestos: [2,1,2,1,2,1], Taller: [1,2,1,2,1,2] },
+  'Indy Motos':   { Ventas: [3,3,4,3,3,3], Repuestos: [3,4,3,3,4,3], Taller: [3,3,3,3,3,4] }
+};
+
+// ─── Helpers ─────────────────────────────────────────────────
+const mean = arr => +( arr.reduce((a,b)=>a+b,0) / arr.length ).toFixed(2);
+
+function groupAvg(area) {
+  return DIMS.map((_,i) =>
+    +( COMERCIALES_LIST.reduce((s,c)=>s+DATA[c][area][i],0) / COMERCIALES_LIST.length ).toFixed(1)
+  );
+}
+
+function globalGroupAvg() {
+  return DIMS.map((_,i) => {
+    const tot = COMERCIALES_LIST.reduce((s,c)=>s+AREAS.reduce((sa,a)=>sa+DATA[c][a][i],0),0);
+    return +( tot / (COMERCIALES_LIST.length * AREAS.length) ).toFixed(1);
+  });
+}
+
+function globalComData(com) {
+  return DIMS.map((_,i) =>
+    +( AREAS.reduce((s,a)=>s+DATA[com][a][i],0) / AREAS.length ).toFixed(1)
+  );
+}
+
+function diffLabel(d) { return d > 0 ? `+${d}` : d === 0 ? '=' : `${d}`; }
+function diffClass(d) { return d > 0 ? 'diff-pos' : d < 0 ? 'diff-neg' : 'diff-zero'; }
+function clrClass(d)  { return d > 0 ? 'clr-better' : d < 0 ? 'clr-worse' : 'clr-neutral'; }
+
+// ─── State ───────────────────────────────────────────────────
+let currentArea = 'Global';
+let currentCom  = 'Fahonda';
+let radarChart;
+
+// ─── Datasets factory ────────────────────────────────────────
+function makeDatasets() {
+  if (currentArea === 'Global') {
+    const sets = AREAS.map(area => ({
+      label: area,
+      data: DATA[currentCom][area],
+      borderColor: AREA_COLORS[area].line,
+      backgroundColor: AREA_COLORS[area].fill,
+      borderWidth: 2.2,
+      pointBackgroundColor: AREA_COLORS[area].line,
+      pointBorderColor: '#0b0c10',
+      pointBorderWidth: 2,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      tension: 0.1
+    }));
+    sets.push({
+      label: 'Promedio grupo',
+      data: globalGroupAvg(),
+      borderColor: 'rgba(255,255,255,0.2)',
+      backgroundColor: 'rgba(255,255,255,0.02)',
+      borderWidth: 1.5,
+      borderDash: [5,4],
+      pointBackgroundColor: 'rgba(255,255,255,0.35)',
+      pointBorderColor: '#0b0c10',
+      pointBorderWidth: 1,
+      pointRadius: 3,
+      pointHoverRadius: 5,
+      tension: 0.1
+    });
+    return sets;
+  } else {
+    const c = AREA_COLORS[currentArea];
+    return [
+      {
+        label: currentCom,
+        data: DATA[currentCom][currentArea],
+        borderColor: c.line,
+        backgroundColor: c.fill,
+        borderWidth: 2.5,
+        pointBackgroundColor: c.line,
+        pointBorderColor: '#0b0c10',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        tension: 0.1
+      },
+      {
+        label: 'Promedio grupo',
+        data: groupAvg(currentArea),
+        borderColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: 'rgba(255,255,255,0.02)',
+        borderWidth: 1.5,
+        borderDash: [5,4],
+        pointBackgroundColor: 'rgba(255,255,255,0.35)',
+        pointBorderColor: '#0b0c10',
+        pointBorderWidth: 1,
+        pointRadius: 3,
+        pointHoverRadius: 5,
+        tension: 0.1
+      }
+    ];
+  }
+}
+
+// ─── Init chart ──────────────────────────────────────────────
+function buildChart() {
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: { labels: DIMS, datasets: makeDatasets() },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 450, easing: 'easeInOutQuart' },
+      scales: {
+        r: {
+          min: 0, max: 5,
+          ticks: {
+            stepSize: 1,
+            display: true,
+            color: 'rgba(255,255,255,0.18)',
+            font: { family: 'DM Mono', size: 9 },
+            backdropColor: 'transparent',
+            callback: v => v === 0 ? '' : v
+          },
+          grid:        { color: 'rgba(255,255,255,0.06)', circular: false },
+          angleLines:  { color: 'rgba(255,255,255,0.06)' },
+          pointLabels: {
+            color: 'rgba(232,234,240,0.85)',
+            font: { family: 'Syne', size: 12, weight: '600' },
+            padding: 12
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1d28',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: '#f0a500',
+          bodyColor: '#e8eaf0',
+          titleFont: { family: 'Syne', size: 12, weight: '700' },
+          bodyFont:  { family: 'DM Mono', size: 12 },
+          padding: 12,
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw} / 5` }
+        }
+      }
+    }
+  });
+}
+
+// ─── Legend ──────────────────────────────────────────────────
+function updateLegend() {
+  const el = document.getElementById('legend');
+  let html = '';
+  if (currentArea === 'Global') {
+    html = AREAS.map(a =>
+      `<div class="legend-item">
+         <div class="legend-swatch" style="background:${AREA_COLORS[a].line}"></div>
+         <span>${a}</span>
+       </div>`
+    ).join('');
+  } else {
+    html = `<div class="legend-item">
+              <div class="legend-swatch" style="background:${AREA_COLORS[currentArea].line}"></div>
+              <span>${currentCom}</span>
+            </div>`;
+  }
+  html += `<div class="legend-item">
+             <div class="legend-swatch dashed"></div>
+             <span>Promedio grupo</span>
+           </div>`;
+  el.innerHTML = html;
+}
+
+// ─── Scores panel ────────────────────────────────────────────
+function updateScores() {
+  const panel = document.getElementById('scoresPanel');
+
+  if (currentArea === 'Global') {
+    panel.innerHTML = DIMS.map((dim, i) => {
+      const vals = AREAS.map(a => DATA[currentCom][a][i]);
+      const comG = +( vals.reduce((a,b)=>a+b,0)/3 ).toFixed(1);
+      const grpG = globalGroupAvg()[i];
+      const diff = +( comG - grpG ).toFixed(1);
+
+      const bars = AREAS.map(a => {
+        const v = DATA[currentCom][a][i];
+        return `<div class="area-bar-row">
+          <span class="area-bar-label" style="color:${AREA_COLORS[a].line}">${a.slice(0,3).toUpperCase()}</span>
+          <div class="area-bar-track">
+            <div class="area-bar-fill" style="width:${v/5*100}%;background:${AREA_COLORS[a].line}"></div>
+          </div>
+          <span class="area-bar-val" style="color:${AREA_COLORS[a].line}">${v}</span>
+        </div>`;
+      }).join('');
+
+      return `<div class="score-card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="score-dim">${dim}</div>
+          <span class="diff-badge ${diffClass(diff)}">${diffLabel(diff)}</span>
+        </div>
+        <div class="area-bars">${bars}</div>
+      </div>`;
+    }).join('');
+
+  } else {
+    const comData = DATA[currentCom][currentArea];
+    const avgData = groupAvg(currentArea);
+    const c = AREA_COLORS[currentArea];
+
+    panel.innerHTML = DIMS.map((dim, i) => {
+      const val  = comData[i];
+      const avg  = avgData[i];
+      const diff = +( val - avg ).toFixed(1);
+
+      return `<div class="score-card">
+        <div class="score-dim">${dim}</div>
+        <div class="score-row">
+          <span class="score-label">Comercial</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="score-value" style="color:${c.line}">${val}.0</span>
+            <span class="diff-badge ${diffClass(diff)}">${diffLabel(diff)}</span>
+          </div>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Grupo avg</span>
+          <span class="score-value" style="color:rgba(255,255,255,0.3)">${avg}</span>
+        </div>
+        <div class="score-bar-track">
+          <div class="score-bar-fill-single" style="width:${val/5*100}%;background:${c.line}"></div>
+          <div class="score-bar-avg" style="left:${avg/5*100}%"></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ─── Summary bar ─────────────────────────────────────────────
+function updateSummary() {
+  const bar = document.getElementById('summaryBar');
+
+  if (currentArea === 'Global') {
+    bar.className = 'summary-bar cols-4';
+    const scores = AREAS.map(a => mean(DATA[currentCom][a]));
+    const global = +( scores.reduce((a,b)=>a+b,0)/3 ).toFixed(2);
+    const grpG   = +( globalGroupAvg().reduce((a,b)=>a+b,0)/6 ).toFixed(2);
+    const diff   = +( global - grpG ).toFixed(2);
+
+    bar.innerHTML = `
+      <div class="summary-item">
+        <div class="summary-num clr-global">${global}</div>
+        <div class="summary-lbl">Score global</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num clr-ventas">${scores[0]}</div>
+        <div class="summary-lbl">Ventas</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num clr-repuestos">${scores[1]}</div>
+        <div class="summary-lbl">Repuestos</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num clr-taller">${scores[2]}</div>
+        <div class="summary-lbl">Taller</div>
+      </div>`;
+  } else {
+    bar.className = 'summary-bar cols-3';
+    const comData = DATA[currentCom][currentArea];
+    const avgData = groupAvg(currentArea);
+    const comAvg  = mean(comData);
+    const grpAvg  = mean(avgData);
+    const diff    = +( comAvg - grpAvg ).toFixed(2);
+
+    bar.innerHTML = `
+      <div class="summary-item">
+        <div class="summary-num" style="color:${AREA_COLORS[currentArea].line}">${comAvg}</div>
+        <div class="summary-lbl">Score comercial</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num" style="color:rgba(255,255,255,0.35)">${grpAvg}</div>
+        <div class="summary-lbl">Promedio grupo</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num ${clrClass(diff)}">${diffLabel(diff)}</div>
+        <div class="summary-lbl">vs Grupo</div>
+      </div>`;
+  }
+}
+
+// ─── Header labels ───────────────────────────────────────────
+function updateLabels() {
+  const ind = document.getElementById('areaIndicator');
+  ind.textContent = currentArea;
+  ind.className = `area-indicator ${currentArea}`;
+  const titles = {
+    Global:    'Perfil global — 3 áreas × 6 dimensiones',
+    Ventas:    'Perfil de madurez — Ventas',
+    Repuestos: 'Perfil de madurez — Repuestos',
+    Taller:    'Perfil de madurez — Taller'
+  };
+  document.getElementById('chartTitleText').textContent = titles[currentArea];
+}
+
+// ─── Full render ─────────────────────────────────────────────
+function render() {
+  if (radarChart) { radarChart.data.datasets = makeDatasets(); radarChart.update(); }
+  updateLabels();
+  updateLegend();
+  updateScores();
+  updateSummary();
+}
+
+// ─── Events ──────────────────────────────────────────────────
+function setArea(area) {
+  currentArea = area;
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.area === area));
+  render();
+}
+
+document.getElementById('comercialSelect').addEventListener('change', e => {
+  currentCom = e.target.value;
+  render();
+});
+
+// ─── Boot ────────────────────────────────────────────────────
+buildChart();
+updateLabels();
+updateLegend();
+updateScores();
+updateSummary();
+</script>
+</body>
+</html>
